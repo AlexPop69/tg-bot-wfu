@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"well-fed_uncle/internal/repository"
-	"well-fed_uncle/pkg/config"
+	"github.com/AlexPop69/tg-bot-wfu/internal/repository"
+	"github.com/AlexPop69/tg-bot-wfu/pkg/config"
 )
 
 func main() {
