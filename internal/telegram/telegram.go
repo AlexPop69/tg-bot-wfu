@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -31,13 +32,19 @@ type Bot struct {
 }
 
 // NewBot создает новый экземпляр бота с необходимыми сервисами
-func NewBot(token string, services *service.Service) *Bot {
-	return &Bot{
-		token:    token,
-		apiURL:   apiURL + token,
-		services: services,
-		client:   &http.Client{Timeout: 10 * time.Second},
+func NewBot(services *service.Service) (*Bot, error) {
+	token := os.Getenv("TELEGRAM_TOKEN")
+	if token == "" {
+		return nil, fmt.Errorf("failed get token")
 	}
+
+	return &Bot{
+			token:    token,
+			apiURL:   apiURL + token,
+			services: services,
+			client:   &http.Client{Timeout: 10 * time.Second},
+		},
+		nil
 }
 
 // Start запускает бота и начинает обработку обновлений
@@ -129,7 +136,7 @@ func (b *Bot) handleUpdate(message *Message) {
 
 // Проверка является ли пользователь администратором
 func (b *Bot) isAdmin(username string) bool {
-	admin, err := b.services.AdminAuthentication(username)
+	admin, err := b.services.Admin.Authentication(username)
 	if err != nil {
 		logrus.Errorf("Error checking admin status for user %s: %v", username, err)
 		return false

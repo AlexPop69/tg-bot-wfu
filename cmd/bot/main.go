@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/AlexPop69/tg-bot-wfu/internal/repository"
+	"github.com/AlexPop69/tg-bot-wfu/internal/service"
 	"github.com/AlexPop69/tg-bot-wfu/internal/telegram"
 	"github.com/AlexPop69/tg-bot-wfu/pkg/config"
 	"github.com/sirupsen/logrus"
@@ -21,6 +22,8 @@ func main() {
 	defer db.Close()
 
 	// Инициализация репозиториев и сервисов
+	repos := repository.NewRepository(db)
+	services := service.NewService(repos)
 
 	// Инициализация Telegram-бота с передачей всех сервисов
 	bot, err := telegram.NewBot(services)
